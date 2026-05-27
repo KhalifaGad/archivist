@@ -6,9 +6,9 @@ You may have never installed Haskell on this machine. That's the assumption.
 
 ## Learning goal
 
-- Install and verify the Haskell toolchain via **GHCup**.
+- Get the Haskell toolchain working — GHC, Cabal, HLS, and ghcup
 - Get comfortable with **GHCi**, the REPL, well enough to ask "what's the type of this?"
-- Notice that types are checked *before* code runs — Haskell's defining trait.
+- Notice that types are checked *before* code runs — Haskell's defining trait
 
 ## Delivery goal
 
@@ -16,33 +16,22 @@ A file `hello.hs` in this directory that compiles, runs, and prints `Hello, Arch
 
 ---
 
-## Concept warm-up (15–25 min)
+## Step 1 — Install the toolchain
 
-### Install GHCup
+Toolchain installation is a separate document because it has enough edge cases (existing installs, old GHC versions, macOS + Homebrew LLVM, installing on an external drive) to deserve its own room.
 
-GHCup is the version manager for the Haskell toolchain (GHC the compiler, Cabal the build tool, HLS the language server). On macOS / Linux:
+➡️ **Follow [INSTALL.md](INSTALL.md), then come back here.**
 
-```sh
-curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
-```
-
-Accept defaults. **Restart your shell** when it's done (or `source` the env file the installer mentions).
-
-Verify all three:
+You're done with Step 1 when this is true in a fresh terminal:
 
 ```sh
-ghc --version       # expect 9.x
-cabal --version     # expect 3.x
-ghci --version
+ghc --version       # prints 9.6.x
+cabal --version     # prints 3.10 or later
 ```
 
-If any say "command not found", check the installer output — it tells you exactly which file to source from `~/.ghcup/env`.
+---
 
-### Editor with language server
-
-Install the **Haskell** extension in VS Code (or the Haskell plugin in your editor of choice). It bundles **HLS** — Haskell Language Server — which gives you inline types, hovers, and errors. Open a `.hs` file and look at the bottom bar; you should see "Haskell" with no red.
-
-### Five minutes in GHCi
+## Step 2 — Five minutes in GHCi
 
 Open a terminal and run `ghci`. Try each of these, one at a time:
 
@@ -117,6 +106,14 @@ If you can answer these without looking, you're ready for Lesson 1.
 - Edit `hello.hs` so it tries to `putStrLn (1 + 1)`. What's the error? Read it carefully — it's your first real Haskell type error, and they're *verbose but accurate*.
 - In GHCi, run `:i Int`. The output starts with `data Int = ...`. You've just looked at the actual definition of a built-in type. Haskell has very little magic — most "primitive" things are defined in plain Haskell.
 - Try `:set +t` in GHCi. Now every expression you evaluate prints its inferred type too. Useful for early learning.
+
+---
+
+## Design choices baked into this lesson
+
+- **GHC 9.6.7 over 9.6.6 or 9.8/9.10** — 9.6.x matches the `base ^>=4.18` constraint in later cabal files. 9.6.7 specifically has *prebuilt* HLS binaries; 9.6.6 doesn't (HLS would have to be compiled from source, which takes ages). Other 9.6.x patch versions with prebuilt HLS are fine — check `ghcup list` for the current set.
+- **ghcup over Stack** — the official ecosystem standard since ~2020. Stack still works but isn't used in this roadmap.
+- **HLS recommended over manually picked HLS** — `ghcup install hls recommended` resolves to whatever HLS the project currently endorses for your GHC. Drift-resistant.
 
 ---
 
